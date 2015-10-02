@@ -1,0 +1,1 @@
+[image, mesure] = CFM_sim_v2(@Afor2f, 1);

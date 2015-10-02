@@ -1,0 +1,246 @@
+load acquisition.mat
+b = data2b';
+
+Setup_Nesta
+
+%% Compression Ratio 8
+N = 256^2;        %-- signal size 
+% M = floor(N/8); %-- number of measurements
+% K = floor(M/5); %-- number of nonzero elements in x
+Sigma = 0.1;      %-- noise level
+
+ExplicitA = false;%-- whether to use explicit matrix for A, or implicit function handles
+
+fprintf('###############################################\n\n');
+fprintf('NESTA_UP: Unconstrained version, N = %d\n\n',N);
+fprintf('###############################################\n\n');
+
+lambda = Sigma*sqrt(2*log(N));
+
+if ExplicitA
+    A = Amatrix; At=[];
+    La = norm( A*A' );
+else
+    A = @Afor2f_8192;
+    At = @Aback2f_8192;
+    La = my_normest( A, At, N )^2;
+    % reset the counter
+    nCalls = counter();
+end
+
+U = [];
+Ut = [];
+
+
+%% APPLY NESTA_UP v1 with continuation
+
+disp('Applying NESTA_UP with continuation');
+mu = 0.1*Sigma/La; %--- can be chosen to be small 
+
+opts = [];
+opts.maxintiter = 6;
+opts.TOlVar = 1e-6;
+opts.verbose = 50;
+opts.maxiter = 500;
+opts.U = U;
+opts.Ut = Ut;
+opts.stoptest = 1;
+
+[x_8192,niter_8192,resid_8192,err_8192,optsOut_8192] = NESTA_UP(A,At,b,lambda,La,mu,opts);
+
+x_NESTA_8192 = reshape(x_8192,[],sqrt(N));
+
+%% Compression ratio 16
+N = 256^2;       %-- signal size 
+% M = floor(N/8); %-- number of measurements
+% K = floor(M/5); %-- number of nonzero elements in x
+Sigma = 0.1;    %-- noise level
+
+ExplicitA = false; %-- whether to use explicit matrix for A, or implicit function handles
+
+fprintf('###############################################\n\n');
+fprintf('NESTA_UP: Unconstrained version, N = %d\n\n',N);
+fprintf('###############################################\n\n');
+
+lambda = Sigma*sqrt(2*log(N));
+
+if ExplicitA
+    A = Amatrix; At=[];
+    La = norm( A*A' );
+else
+%     A = @(z) counter( @(x)Amatrix*x, z);
+%     At= @(z) counter( @(x)Amatrix'*x, z);
+    A = @Afor2f_4096;
+    At = @Aback2f_4096;
+    La = my_normest( A, At, N )^2;
+    % reset the counter
+    nCalls = counter();
+end
+
+U = [];
+Ut = [];
+
+
+%% APPLY NESTA_UP v1 with continuation
+
+disp('Applying NESTA_UP with continuation');
+mu = 0.1*Sigma/La; %--- can be chosen to be small
+
+opts = [];
+opts.maxintiter = 6;
+opts.TOlVar = 1e-6;
+opts.verbose = 50;
+opts.maxiter = 500;
+opts.U = U;
+opts.Ut = Ut;
+opts.stoptest = 1;
+
+[x_4096,niter_4096,resid_4096,err_4096,optsOut_4096] = NESTA_UP(A,At,b(1:4096),lambda,La,mu,opts);
+
+x_NESTA_4096= reshape(x_4096,[],sqrt(N));
+
+%% Compression ratio 32
+N = 256^2;       %-- signal size 
+% M = floor(N/8); %-- number of measurements
+% K = floor(M/5); %-- number of nonzero elements in x
+Sigma = 0.1;    %-- noise level
+
+ExplicitA = false; %-- whether to use explicit matrix for A, or implicit function handles
+
+fprintf('###############################################\n\n');
+fprintf('NESTA_UP: Unconstrained version, N = %d\n\n',N);
+fprintf('###############################################\n\n');
+
+lambda = Sigma*sqrt(2*log(N));
+
+if ExplicitA
+    A = Amatrix; At=[];
+    La = norm( A*A' );
+else
+%     A = @(z) counter( @(x)Amatrix*x, z);
+%     At= @(z) counter( @(x)Amatrix'*x, z);
+    A = @Afor2f_1024;
+    At = @Aback2f_1024;
+    La = my_normest( A, At, N )^2;
+    % reset the counter
+    nCalls = counter();
+end
+
+U = [];
+Ut = [];
+
+
+%% APPLY NESTA_UP v1 with continuation
+
+disp('Applying NESTA_UP with continuation');
+mu = 0.1*Sigma/La; %--- can be chosen to be small
+
+opts = [];
+opts.maxintiter = 6;
+opts.TOlVar = 1e-6;
+opts.verbose = 50;
+opts.maxiter = 500;
+opts.U = U;
+opts.Ut = Ut;
+opts.stoptest = 1;
+
+[x_1024,niter_1024,resid_1024,err_1,optsOut_2048] = NESTA_UP(A,At,b(1:2048),lambda,La,mu,opts);
+
+x_NESTA_2048 = reshape(x_2048,[],sqrt(N));
+
+%% Compression Ratio 8
+N = 256^2;       %-- signal size 
+% M = floor(N/8); %-- number of measurements
+% K = floor(M/5); %-- number of nonzero elements in x
+Sigma = 0.1;    %-- noise level
+
+ExplicitA = false; %-- whether to use explicit matrix for A, or implicit function handles
+
+fprintf('###############################################\n\n');
+fprintf('NESTA_UP: Unconstrained version, N = %d\n\n',N);
+fprintf('###############################################\n\n');
+
+lambda = Sigma*sqrt(2*log(N));
+
+if ExplicitA
+    A = Amatrix; At=[];
+    La = norm( A*A' );
+else
+%     A = @(z) counter( @(x)Amatrix*x, z);
+%     At= @(z) counter( @(x)Amatrix'*x, z);
+    A = @Afor2f_2048;
+    At = @Aback2f_2048;
+    La = my_normest( A, At, N )^2;
+    % reset the counter
+    nCalls = counter();
+end
+
+U = [];
+Ut = [];
+
+
+%% APPLY NESTA_UP v1 with continuation
+
+disp('Applying NESTA_UP with continuation');
+mu = 0.1*Sigma/La; %--- can be chosen to be small
+
+opts = [];
+opts.maxintiter = 6;
+opts.TOlVar = 1e-6;
+opts.verbose = 50;
+opts.maxiter = 500;
+opts.U = U;
+opts.Ut = Ut;
+opts.stoptest = 1;
+
+[x_2048,niter_2048,resid_2048,err_2048,optsOut_2048] = NESTA_UP(A,At,b(1:2048),lambda,La,mu,opts);
+
+x_NESTA_2048 = reshape(x_2048,[],sqrt(N));
+
+N = 256^2;       %-- signal size 
+% M = floor(N/8); %-- number of measurements
+% K = floor(M/5); %-- number of nonzero elements in x
+Sigma = 0.1;    %-- noise level
+
+ExplicitA = false; %-- whether to use explicit matrix for A, or implicit function handles
+
+fprintf('###############################################\n\n');
+fprintf('NESTA_UP: Unconstrained version, N = %d\n\n',N);
+fprintf('###############################################\n\n');
+
+lambda = Sigma*sqrt(2*log(N));
+
+if ExplicitA
+    A = Amatrix; At=[];
+    La = norm( A*A' );
+else
+%     A = @(z) counter( @(x)Amatrix*x, z);
+%     At= @(z) counter( @(x)Amatrix'*x, z);
+    A = @Afor2f_512;
+    At = @Aback2f_512;
+    La = my_normest( A, At, N )^2;
+    % reset the counter
+    nCalls = counter();
+end
+
+U = [];
+Ut = [];
+
+
+%% APPLY NESTA_UP v1 with continuation
+
+disp('Applying NESTA_UP with continuation');
+mu = 0.1*Sigma/La; %--- can be chosen to be small
+
+opts = [];
+opts.maxintiter = 6;
+opts.TOlVar = 1e-6;
+opts.verbose = 50;
+opts.maxiter = 500;
+opts.U = U;
+opts.Ut = Ut;
+opts.stoptest = 1;
+
+[x_512,niter_512,resid_512,err_512,optsOut_512] = NESTA_UP(A,At,b(1:512),lambda,La,mu,opts);
+
+x_NESTA_512= reshape(x_512,[],sqrt(N));
